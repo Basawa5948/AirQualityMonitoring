@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="good">#008000</color>
+    <color name="satisfactory">#7DCEA0</color>
+    <color name="moderate">#FFFF00</color>
+    <color name="poor">#DC7633</color>
+    <color name="very_poor">#E74C3C </color>
+    <color name="severe">#78281F </color>
+    <color name="background_color">#FEDBD0</color>
 </resources>
