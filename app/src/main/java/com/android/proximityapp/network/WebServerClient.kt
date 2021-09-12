@@ -45,7 +45,9 @@ class WebServerClient(){
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             super.onFailure(webSocket, t, response)
             Log.d(TAG,"onFailure = "+t.localizedMessage)
-            liveErrorData.postValue("WebSocket Failed for ${t.localizedMessage}")
+            if(t.localizedMessage?.toString() != "executor rejected") {
+                liveErrorData.postValue("WebSocket Failed for ${t.localizedMessage}")
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TableLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.android.proximityapp.R
@@ -16,7 +17,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AQMDisplayDataAdapter(private val mContext:Context): RecyclerView.Adapter<MyViewHolder>() {
+class AQMDisplayDataAdapter(private val mContext:Context,private val listener:SelectedCity):
+            RecyclerView.Adapter<MyViewHolder>() {
 
     private var listOfAQIData:ArrayList<AQIData> = ArrayList()
     private var oldValue = ""
@@ -74,6 +76,9 @@ class AQMDisplayDataAdapter(private val mContext:Context): RecyclerView.Adapter<
                     lastUpdatedValue.text = presentTime
                 }
             }
+            rootLayout.setOnClickListener(View.OnClickListener {
+                listener.getSelectedCity(aqiData.city)
+            })
         }
     }
 
@@ -81,7 +86,12 @@ class AQMDisplayDataAdapter(private val mContext:Context): RecyclerView.Adapter<
         return listOfAQIData.size
     }
 
+    interface SelectedCity{
+        fun getSelectedCity(cityName:String)
+    }
+
     inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var rootLayout:TableLayout = itemView.findViewById(R.id.rootTableLayout)
         var cityName:TextView = itemView.findViewById(R.id.cityName)
         var aqiValue:TextView = itemView.findViewById(R.id.aqiValue)
         var lastUpdatedValue:TextView = itemView.findViewById(R.id.lastUpdated)

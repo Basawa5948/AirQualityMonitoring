@@ -50,15 +50,13 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:5.0.0-alpha.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2'
-    // RxJava
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
-    // RxAndroid
-    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     //gson convertor
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     //Lottie
     implementation 'com.airbnb.android:lottie:3.4.0'
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
+    //AndroidMpChart For Graph
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 }

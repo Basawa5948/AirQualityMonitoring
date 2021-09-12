@@ -1,32 +1,48 @@
 package com.android.proximityapp.view
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.android.proximityapp.R
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val CITY_NAME = "cityName"
+private const val AQI_VALUES = "aqiValues"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AQMMonitoringFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AQMMonitoringFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var selectedCity: String
+    private lateinit var selectedCityValues: ArrayList<Int>
+    private lateinit var mContext: Context
+    private val TAG = AQMMonitoringFragment::class.java.simpleName
+    private lateinit var mpLineChart: LineChart
+    private lateinit var iLineDataSet:ArrayList<ILineDataSet>
+    private lateinit var lineData:LineData
+
+    companion object {
+        @JvmStatic
+        fun newInstance(cityName: String, aqiValues: ArrayList<Int>) =
+            AQMMonitoringFragment().apply {
+                arguments = Bundle().apply {
+                    putString(CITY_NAME, cityName)
+                    putIntegerArrayList(AQI_VALUES, aqiValues)
+                }
+            }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            selectedCity = it.getString(CITY_NAME).toString()
+            selectedCityValues = it.getIntegerArrayList(AQI_VALUES) as ArrayList<Int>
         }
     }
 
@@ -38,23 +54,40 @@ class AQMMonitoringFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_aqm_monitoring, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AQMMonitoringFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AQMMonitoringFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mContext = context
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG,"City Name = $selectedCity And " +
+                "AQIValues = ${selectedCityValues.joinToString()}")
+        mpLineChart = view.findViewById(R.id.rootLineChart)
+        //forming datasets for graph
+        val lineDataSet = LineDataSet(formEntryListForGraph(),selectedCity)
+        iLineDataSet = ArrayList()
+        iLineDataSet.add(lineDataSet)
+        lineData = LineData(iLineDataSet)
+        mpLineChart.data = lineData
+        mpLineChart.setDrawGridBackground(true)
+        mpLineChart.setDrawBorders(true)
+        mpLineChart.setBorderColor(mContext.resources.getColor(R.color.good))
+        mpLineChart.setBorderWidth(2F)
+        mpLineChart.invalidate()
+
+        val desc = Description()
+        desc.text = "Real Time Chart"
+        desc.textColor = mContext.resources.getColor(R.color.purple_700)
+        desc.textSize = 12F
+        mpLineChart.description = desc
+    }
+
+    fun formEntryListForGraph(): ArrayList<Entry> {
+        val xyList = ArrayList<Entry>()
+        selectedCityValues.forEachIndexed { index, value ->
+            xyList.add(Entry(index.toFloat(), value.toFloat()))
+        }
+        return xyList
     }
 }
