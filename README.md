@@ -46,3 +46,6 @@ Each update will contain 0 or more cities/AQI pairs. You may assume that update 
 
 # Unit Test Cases
 - A Helper Utility Class which holds the functions for displaying data based on requirements was considered for UnitTest Cases
+
+# Time Taken
+- 12 - 15 Hours
