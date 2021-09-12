@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.proximityapp.R
 import com.android.proximityapp.adapter.AQMDisplayDataAdapter.MyViewHolder
 import com.android.proximityapp.data.AQIData
+import com.android.proximityapp.utility.HelperUtility
+import com.android.proximityapp.utility.StringConstants
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -19,8 +21,7 @@ class AQMDisplayDataAdapter(private val mContext:Context): RecyclerView.Adapter<
     private var listOfAQIData:ArrayList<AQIData> = ArrayList()
     private var oldValue = ""
     private var newValue = ""
-    private val HEADINGONE = "A Few Seconds Ago"
-    private val HEADINGTWO = "A Minute Ago"
+    private val helperUtility = HelperUtility()
 
     fun setData(list:List<AQIData>){
         listOfAQIData.clear()
@@ -46,27 +47,8 @@ class AQMDisplayDataAdapter(private val mContext:Context): RecyclerView.Adapter<
         with(holder){
             cityName.text = aqiData.city
             aqiValue.text = aqiData.aqi.toString()
-            when(aqiData.aqi.toInt()) {
-                in 1..50 ->{
-                    //Category = Good
-                    aqiValue.setTextColor(mContext.resources.getColor(R.color.good))
-                }in 51..100 ->{
-                    //Category = Satisfactory
-                    aqiValue.setTextColor(mContext.resources.getColor(R.color.satisfactory))
-                }in 101..200 ->{
-                    //Category = Moderate
-                    aqiValue.setTextColor(mContext.resources.getColor(R.color.moderate))
-                }in 201..300 ->{
-                    //Category = Poor
-                    aqiValue.setTextColor(mContext.resources.getColor(R.color.poor))
-                }in 301..400 ->{
-                    //Category = Very Poor
-                    aqiValue.setTextColor(mContext.resources.getColor(R.color.very_poor))
-                }else ->{
-                    //Category = Severe
-                    aqiValue.setTextColor(mContext.resources.getColor(R.color.severe))
-                }
-            }
+            val colorCode = helperUtility.getColorFromAQIValue(aqiData.aqi.toInt())
+            aqiValue.setTextColor(mContext.resources.getColor(colorCode))
             val presentTime = "$hour:$minutes:$seconds $AM_PM"
             Log.d("Present Time", "= $presentTime")
             if(cityName.text.equals(aqiData.city) && aqiValue.text.equals(aqiData.aqi.toString())){
@@ -74,23 +56,19 @@ class AQMDisplayDataAdapter(private val mContext:Context): RecyclerView.Adapter<
             }else{
                 if(lastUpdatedValue.text.isNotEmpty()) {
                     val tempPresentTime:String = presentTime
-                    val tempLastUpdatedValue = if(lastUpdatedValue.text.equals(HEADINGONE) ||
-                        lastUpdatedValue.text.equals(HEADINGTWO)){
+                    val tempLastUpdatedValue = if(lastUpdatedValue.text.equals(StringConstants.HEADINGONE) ||
+                        lastUpdatedValue.text.equals(StringConstants.HEADINGTWO)){
                         tempPresentTime
                     }else {
                         lastUpdatedValue.text as String
                     }
-                    val finalValue = tempLastUpdatedValue.replace("(?s)^.*?:|:[^:]*$".toRegex(), "").split("(?s):([^:]*\\s[^:]*:)?".toRegex())
+                    val finalValue = helperUtility.getMinuteFromTime(tempLastUpdatedValue)
                     oldValue = finalValue[0]
                     newValue = minutes.toString()
-                    when((newValue.toInt() - oldValue.toInt())){
-                        0 ->{
-                            lastUpdatedValue.text = HEADINGONE
-                        }in 1..1 ->{
-                            lastUpdatedValue.text = HEADINGTWO
-                        }else ->{
-                            lastUpdatedValue.text = presentTime
-                        }
+                    lastUpdatedValue.text = if(helperUtility.getLastUpdatedValue(newValue.toInt(),oldValue.toInt()).isEmpty()){
+                         presentTime
+                    }else{
+                         helperUtility.getLastUpdatedValue(newValue.toInt(),oldValue.toInt())
                     }
                 }else{
                     lastUpdatedValue.text = presentTime
