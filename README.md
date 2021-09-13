@@ -10,7 +10,7 @@ A single activity app to display live air quality monitoring data.
 # PART B
 - Clicking on the city should open a real time (30s interval or more) chart of the AQI of the selected city
 
-DATA
+# DATA
 App will subscribe for updates via WebSockets
 Server url: ws://city-ws.herokuapp.com/
 
@@ -26,15 +26,13 @@ Each update will contain 0 or more cities/AQI pairs. You may assume that update 
 
 # CORE LOGIC
 - Loading Fragment A when the app is launched, Fragment A will register itself to the ViewModel present.
-- ViewModel interacts with the network layer of the app where the websocket is initiated and the listeners are created to fetch the response
+- ViewModel interacts with the network layer of the app where the websocket is initiated and the websocket listeners are created to fetch the response
 - once the response is received, the network layer parses the data and forms the Object/Model class of the responseType.
 - This is passed on to the viewModel through liveData modules.
-- Frgagment A is already observing for the latest data and hence the latest info is fetched and displayed in the table
-
-# PART B APPROACH
-- A Small interface between the two fragments for communication is created, on clicking the city name(it is a textView, hence the callback is easily obtained).
-- A dataStrcutre can be used to store info of all the AQIValues for each city from the response.
-- Pass this dataStructure and the city name from Fragment A to Fragment B
+- Fragment A is already observing for the latest data and hence the latest info is fetched and displayed in the table
+- A Small interface between the two fragments for communication is created, on clicking the city name.
+- A hashMap is used to store info of all the AQIValues for each city from the response.
+- Pass this AQIValues and the city name from Fragment A to Fragment B
 - Use the MPAndroidChart library to display the graph in the Fragment B
 
 # Library's Used
@@ -43,9 +41,10 @@ Each update will contain 0 or more cities/AQI pairs. You may assume that update 
 - recyclerView and CardView for the UI
 - lottie for the animations
 - mockito and jUnit for Unit Test cases
+- MPAndroidChart for Graph
 
 # Unit Test Cases
 - A Helper Utility Class which holds the functions for displaying data based on requirements was considered for UnitTest Cases
 
 # Time Taken
-- 12 - 15 Hours
+- 16 - 18 Man Hours

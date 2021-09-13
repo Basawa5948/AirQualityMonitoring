@@ -11,7 +11,6 @@ import java.lang.reflect.Type
 
 
 class WebServerClient(){
-    private lateinit var instance:WebServerClient
     private val WEBSOCKET_URL = "ws://city-ws.herokuapp.com/"
     private val TAG = "WebServerClient"
     private var client = OkHttpClient()
